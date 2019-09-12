@@ -3,9 +3,7 @@ import {  model, Schema } from "mongoose"
 var RoleSchema = new Schema({
   _id: Schema.Types.ObjectId,
     admin: Array,
-    user: Array
-  
- 
+    users: Array
 },{collection : "usersInRole"});
 
-export const role = model('usersInRole', RoleSchema);
+export const roleModel = model('usersInRole', RoleSchema)

@@ -8,8 +8,12 @@ const controller = new Controller();
 // Retrieve all books
 product.get("/", controller.getProducts);
 
-product.put("/", controller.addProduct);
+product.put("/:id", controller.updateProduct);
 
 product.post('/', controller.addProduct)
+
+product.delete("/:id", controller.removeProduct)
+
+product.get('/:id', controller.getOneProduct)
 
 export default product;

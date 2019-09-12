@@ -7,8 +7,6 @@ const controller = new Controller();
 
 // Retrieve all Users
 role.get('/' ,controller.findRoles);
+role.delete('/:id', controller.remove)
 
-
-
-
-export default user;
+export default role;

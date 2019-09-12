@@ -5,6 +5,7 @@ var AuthSchema = new Schema({
   _id: Schema.Types.ObjectId,
   email: String,
   password: String,
+  passwordComfirm: String,
   isAdmin: Boolean,
   login: String,
   details: Object,
@@ -14,14 +15,11 @@ var AuthSchema = new Schema({
   }
 );
 
-var RoleSchema = new Schema({
-  _id: Schema.Types.ObjectId,
-    admin: Array,
-    users: Array
-  
- 
-},{collection : "usersInRole"});
+// var RoleSchema = new Schema({
+//   _id: Schema.Types.ObjectId,
+//     admin: Array,
+//     users: Array
+// },{collection : "usersInRole"});
 
 
 export const authModel = model('users', AuthSchema);
-export const roleModel = model('usersInRole', RoleSchema)

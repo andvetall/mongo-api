@@ -9,8 +9,6 @@ const verifyAdmin = async (req, res, next): Promise<any> => {
     })
 
   }
-
-  // check header or url parameters or post parameters for token
   const token: string = req.headers.authorization;
 
   if (!token) {
@@ -18,7 +16,6 @@ const verifyAdmin = async (req, res, next): Promise<any> => {
   }
 
   try {
-    // verifies secret and checks exp
     const decoded = await jwt.verify(token, config.JWT_ENCRYPTION);
     if (!(<any>decoded).isAdmin) {
       return res.status(401).send({ auth: false, message: "Unauthorized." });

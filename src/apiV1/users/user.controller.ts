@@ -9,12 +9,8 @@ export default class UserController {
 
   public findAll = async (req: Request, res: Response): Promise<any> => {
     try {
-
-
       let arr: any[] = []
       const usersq = await users.find();
-      console.log(usersq);
-      
       await usersq.forEach((user: any) => {
         arr.push({
           firstName: user.firstName,
@@ -23,7 +19,6 @@ export default class UserController {
           email: user.email
         })
       })
-
       if (!usersq) {
         return res.status(404).send({
           success: false,
@@ -46,9 +41,7 @@ export default class UserController {
 
   public findOne = async (req: Request, res: Response): Promise<any> => {
     try {
-
-      const user = await users.findById(req.params.id);
-
+      const user = await users.findById(req.params.id)
       if (!user) {
         return res.status(404).send({
           success: false,
@@ -56,7 +49,6 @@ export default class UserController {
           data: null
         });
       }
-
       res.status(200).send({
         success: true,
         data: user
@@ -71,27 +63,30 @@ export default class UserController {
   };
 
   public update = async (req: Request, res: Response): Promise<any> => {
-    const { firstName, age, email, avatar } = req.body
     try {
       set('useFindAndModify', false);
-      const filter = { _id: req.params.id };
+      const filter = { _id: req.body._id};
       const userUpdated = await users.findOneAndUpdate(filter,
         {
-          firstName: firstName,
-          age: age,
-          email: email,
-          avatar: avatar
-
-        },
+          login: req.body.login,
+          email: req.body.email,
+          details: {
+              email: req.body.email,
+              address: {
+                  country: req.body.details.address.country,
+                  city: req.body.details.address.city,
+                  street: req.body.details.address.street,
+                  house: req.body.details.address.appartment,
+                  appartment: req.body.details.address.appartment
+              },
+              mobile: req.body.details.mobile,
+              website: req.body.details.website,
+              userImg: req.body.details.userImg,  
+        }
+      },
         { new: true }
       );
-      if (!userUpdated) {
-        return res.status(404).send({
-          success: false,
-          message: 'User not found',
-          data: null
-        });
-      }
+   
       res.status(200).send({
         success: true,
         data: userUpdated
@@ -107,10 +102,8 @@ export default class UserController {
 
   public remove = async (req: Request, res: Response): Promise<any> => {
     try {
-
-      const user = await users.findOneAndDelete(req.params.id);
-      
-      
+      const filter = { _id: req.params.id };
+      const user = await users.findOneAndDelete(filter);
       if (!user) {
         return res.status(404).send({
           success: false,

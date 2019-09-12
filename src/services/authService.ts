@@ -1,12 +1,11 @@
-import { authModel, roleModel } from "../apiV1/auth/auth.model";
-import { role } from '../apiV1/role/role.model'
+import { authModel } from "../apiV1/auth/auth.model";
+import { roleModel } from "../apiV1/role/role.model"
 import { ObjectID, ObjectId } from "bson";
 import { users } from "../apiV1/users/user.model";
 
 interface user {
   email: string;
   password: string;
-  firstName: string;
 }
 
 export class AuthService {
@@ -25,8 +24,6 @@ export class AuthService {
     let arrAll: any = role[0]
     let x:boolean
     for(let i in arrAll.admin){
-      console.log( arrAll.admin[i].toString());
-      console.log(id.toString());
       arrAll.admin[i].toString() == id.toString() ?  x = true : x = false
     }
       return x

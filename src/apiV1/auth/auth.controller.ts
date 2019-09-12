@@ -12,16 +12,13 @@ export default class UserController {
     const { email, password } = req.body;
     try {
       const user: any = await new AuthService().getUserByEmail(email);
-      
       if (!user) {
         return res.status(404).send({
           success: false,
           message: "User not found",
           isLoggedIn: false,
         });
-
       }
-
       const matchPasswords = await bcrypt.compare(password, user.password);
       if (!matchPasswords) {
         return res.status(401).send({
@@ -29,12 +26,9 @@ export default class UserController {
           message: "Not authorized",
           isLoggedIn: false
         });
-      }
-
-      const role = await new AuthService().createRole(user._id.toString())
-      
-      
-      const token = await jwt.sign(
+      }else {
+        const role = await new AuthService().createRole(user._id.toString())
+        const token = await jwt.sign(
         {
           email: user.email,
           isAdmin: role,
@@ -46,12 +40,13 @@ export default class UserController {
         config.JWT_ENCRYPTION,
         { expiresIn: config.JWT_EXPIRATION }
       );
-
-      res.status(200).send({
-        success: true,
-        message: "Token generated Successfully",
-        token: token,
-      });
+      
+        res.status(200).send({
+          success: true,
+          message: "Token generated Successfully",
+          token: token,
+        });
+      }
     } catch (err) {
       res.status(500).send({
         success: false,
@@ -70,19 +65,32 @@ export default class UserController {
       login: req.body.login,
       details: req.body.details
     };
+    
 
     try {
       const matchUser: any = await new AuthService().register(user);
-
+      let checkPass = () => {
+        if(req.body.password === req.body.passwordComfirm){
+          return true
+        } else {return false}
+      }
+      
       if (!matchUser) {
         res.status(200).send({
           success: true,
           message: "User Successfully created",
           data: user
         });
-      } else return res.status(401).send({
+
+      }else if(!checkPass()){
+        return res.status(402).send({
+          success: false,
+          message: `Passwords are not same`
+        })
+      }
+       else return res.status(401).send({
         success: false,
-        message: `User with E-mail:${matchUser.email} alredy exist!`
+        message: `User with E-mail: "${matchUser.email}" alredy exist!`
       });
 
     } catch (err) {
